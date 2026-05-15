@@ -17,59 +17,61 @@ import os
 
 app = FastAPI(title="Textil API")
 
-# Cargar datos iniciales del Excel la primera vez
+# Cargar datos iniciales desde CSV
 @app.on_event("startup")
 def startup():
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
+
     if db.query(Tela).count() == 0:
-        ruta_excel = "../Hoja de cálculo sin título.xlsx"
-        if os.path.exists(ruta_excel):
-            try:
-                telas_df = pd.read_excel(ruta_excel, sheet_name="TELAS")
-                rollos_df = pd.read_excel(ruta_excel, sheet_name="ROLLOS")
-                cortes_df = pd.read_excel(ruta_excel, sheet_name="CORTES")
-                for _, row in telas_df.iterrows():
-                    tela = Tela(
-                        codigo_tela=float(row['Código Tela']),
-                        tipo=row['Tipo'],
-                        color=row['Color'],
-                        precio_kg=float(row['Precio KG']),
-                        minimo_kg=float(row['Mínimo KG'])
-                    )
-                    db.add(tela)
-                db.commit()
-                for _, row in rollos_df.iterrows():
-                    rollo = Rollo(
-                        id_rollo=int(row['ID Rollo']),
-                        fecha=pd.to_datetime(row['Fecha']).to_pydatetime(),
-                        codigo_tela=float(row['Código Tela']),
-                        tipo=row['Tipo'],
-                        color=row['Color'],
-                        kg_rollo=float(row['Kg Rollo']),
-                        observacion=row['Observación'] if pd.notna(row['Observación']) else None
-                    )
-                    db.add(rollo)
-                db.commit()
-                for _, row in cortes_df.iterrows():
-                    corte = Corte(
-                        nro_corte=int(row['N° Corte']),
-                        fecha=pd.to_datetime(row['Fecha']).to_pydatetime(),
-                        codigo_tela=float(row['Código Tela']),
-                        tipo=row['Tipo'],
-                        color=row['Color'],
-                        kg_usados=float(row['Kg Usados']),
-                        rollos_usados=int(row['Rollos Usados']),
-                        metros_usados=float(row['Metros Usados']) if pd.notna(row['Metros Usados']) else None,
-                        observacion=row['Observación'] if pd.notna(row['Observación']) else None
-                    )
-                    db.add(corte)
-                db.commit()
-                print("Datos migrados correctamente desde el Excel.")
-            except Exception as e:
-                print("Error al migrar Excel:", e)
-        else:
-            print("No se encontró el archivo Excel. Se inicia con la base vacía.")
+        try:
+            telas_df = pd.read_csv("telas.csv")
+            rollos_df = pd.read_csv("rollos.csv")
+            cortes_df = pd.read_csv("cortes.csv")
+
+            for _, row in telas_df.iterrows():
+                db.add(Tela(
+                    codigo_tela=row["codigo_tela"],
+                    tipo=row["tipo"],
+                    color=row["color"],
+                    precio_kg=row["precio_kg"],
+                    minimo_kg=row["minimo_kg"]
+                ))
+
+            db.commit()
+
+            for _, row in rollos_df.iterrows():
+                db.add(Rollo(
+                    id_rollo=row["id_rollo"],
+                    fecha=pd.to_datetime(row["fecha"]),
+                    codigo_tela=row["codigo_tela"],
+                    tipo=row["tipo"],
+                    color=row["color"],
+                    kg_rollo=row["kg_rollo"],
+                    observacion=row["observacion"]
+                ))
+
+            db.commit()
+
+            for _, row in cortes_df.iterrows():
+                db.add(Corte(
+                    nro_corte=row["nro_corte"],
+                    fecha=pd.to_datetime(row["fecha"]),
+                    codigo_tela=row["codigo_tela"],
+                    tipo=row["tipo"],
+                    color=row["color"],
+                    kg_usados=row["kg_usados"],
+                    rollos_usados=row["rollos_usados"],
+                    observacion=row["observacion"]
+                ))
+
+            db.commit()
+
+            print("CSV cargados correctamente")
+
+        except Exception as e:
+            print("ERROR:", e)
+
     db.close()
 
 # Endpoints de consulta
