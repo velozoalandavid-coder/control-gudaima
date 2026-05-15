@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: gudaima
+      POSTGRES_PASSWORD: gudaima123
+      POSTGRES_DB: textil_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gudaima -d textil_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    ports:
+      - "8002:8000"
+    environment:
+      DATABASE_URL: postgresql://gudaima:gudaima123@db:5432/textil_db
+    volumes:
+      - ./Hoja de cálculo sin título.xlsx:/app/Hoja de cálculo sin título.xlsx
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8503:8501"
+    environment:
+      API_URL: http://backend:8000
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
