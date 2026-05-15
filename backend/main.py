@@ -23,7 +23,7 @@ def startup():
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     if db.query(Tela).count() == 0:
-        ruta_excel = "ruta_excel = "Hoja de cálculo sin título.xlsx""
+        ruta_excel = "../Hoja de cálculo sin título.xlsx"
         if os.path.exists(ruta_excel):
             try:
                 telas_df = pd.read_excel(ruta_excel, sheet_name="TELAS")
