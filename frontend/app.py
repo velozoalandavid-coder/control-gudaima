@@ -363,24 +363,106 @@ elif menu == "📋 Ver Rollos":
             except Exception as e:
                 st.error(f"Error: {e}")
 elif menu == "📋 Ver Cortes":
-    st.subheader("Listado de Cortes")
-    cortes = fetch_json("/cortes")
-    if cortes:
-        df = pd.DataFrame(cortes)
-        st.dataframe(df, use_container_width=True)
+    st.subheader("✂️ Historial de Cortes")
 
-        st.subheader("Eliminar un corte por número")
-        nro_a_eliminar = st.number_input("N° de corte a eliminar", min_value=1, step=1, key="del_corte")
-        if st.button("🗑️ Eliminar Corte"):
-            try:
-                r = requests.delete(f"{API_URL}/cortes/{int(nro_a_eliminar)}")
-                if r.status_code == 200:
-                    st.success(r.json()["mensaje"])
-                    st.rerun()
-                else:
-                    st.error(r.json().get("detail", "Error al eliminar"))
-            except Exception as e:
-                st.error(f"Error: {e}")
+    cortes = fetch_json("/cortes")
+
+    if cortes:
+
+        buscar = st.text_input(
+            "🔎 Buscar corte, tela o color"
+        )
+
+        df = pd.DataFrame(cortes)
+
+        df = df.fillna("-")
+
+        if buscar:
+            buscar=buscar.lower()
+
+            df=df[
+                df.astype(str)
+                .apply(
+                    lambda x:
+                    x.str.lower()
+                    .str.contains(buscar)
+                )
+                .any(axis=1)
+            ]
+
+        for _, corte in df.iterrows():
+
+            st.markdown(
+            f"""
+<div style="
+background:white;
+padding:18px;
+border-radius:18px;
+margin-bottom:15px;
+box-shadow:0 2px 12px rgba(0,0,0,0.08);
+border-left:6px solid #e91e63;
+">
+
+<h3>✂️ Corte N° {int(corte['nro_corte'])}</h3>
+
+<b>📅 Fecha:</b>
+{corte['fecha']}
+
+<br>
+
+<b>🧵 Tela:</b>
+{corte['tipo']}
+
+<br>
+
+<b>🎨 Color:</b>
+{corte['color']}
+
+<br>
+
+<b>⚖️ KG usados:</b>
+{corte['kg_usados']}
+
+<br>
+
+<b>📦 Rollos:</b>
+{corte['rollos_usados']}
+
+<br>
+
+<b>📝 Observación:</b>
+{corte['observacion']}
+
+</div>
+""",
+unsafe_allow_html=True
+)
+
+        st.markdown("---")
+
+        st.subheader(
+            "🗑️ Eliminar Corte"
+        )
+
+        nro=st.number_input(
+            "Número",
+            min_value=1,
+            step=1
+        )
+
+        if st.button(
+            "Eliminar Corte"
+        ):
+
+            r=requests.delete(
+            f"{API_URL}/cortes/{int(nro)}"
+            )
+
+            if r.status_code==200:
+                st.success(
+                    "Eliminado"
+                )
+                st.rerun()
 
 
 elif menu == "➕ Agregar Tela":
