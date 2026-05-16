@@ -106,20 +106,99 @@ menu = st.sidebar.radio("Navegación",
      "📋 Ver Rollos", "📋 Ver Cortes", "➕ Agregar Tela", "🗑️ Eliminar Tela"])
 
 if menu == "📦 Stock Actual":
-    st.subheader("Stock Actual de Telas")
+    st.subheader("📦 Stock Actual de Telas")
+
+    # acceso admin
+    admin = st.sidebar.checkbox("🔒 Modo Admin")
+    autorizado=False
+
+    if admin:
+        clave = st.sidebar.text_input(
+            "Contraseña",
+            type="password"
+        )
+        if clave == "Alan2026":
+            autorizado=True
+            st.sidebar.success("Modo admin activo")
+
     stock = fetch_json("/stock")
+
     if stock:
         df = pd.DataFrame(stock)
-        st.dataframe(df, use_container_width=True)
-        total_kg = df['stock_actual_kg'].sum()
-        total_valor = df['valor_stock'].sum()
-        por_comprar = (df['estado'] == 'COMPRAR').sum()
-        sin_stock = (df['estado'] == 'SIN STOCK').sum()
-        col1, col2, col3, col4 = st.columns(4)
-        col1.metric("KG Totales", f"{total_kg:.1f}")
-        col2.metric("Valor Total", f"${total_valor:,.0f}")
-        col3.metric("Para Comprar", por_comprar)
-        col4.metric("Sin Stock", sin_stock)
+
+        # limpiar NaN
+        df=df.fillna("-")
+
+        # buscador
+        buscar = st.text_input(
+            "🔎 Buscar tela, color o código"
+        )
+
+        if buscar:
+            buscar=buscar.lower()
+
+            df=df[
+                df.astype(str)
+                .apply(
+                    lambda x:
+                    x.str.lower()
+                    .str.contains(buscar)
+                )
+                .any(axis=1)
+            ]
+
+        # semáforo lindo
+        estado_color={
+            "OK":"🟢 OK",
+            "COMPRAR":"🟡 COMPRAR",
+            "SIN STOCK":"🔴 SIN STOCK"
+        }
+
+        df["estado"]=df["estado"].replace(
+            estado_color
+        )
+
+        # ocultar precios
+        if not autorizado:
+            df=df.drop(
+                columns=[
+                    "precio_kg",
+                    "valor_stock"
+                ],
+                errors="ignore"
+            )
+
+        st.dataframe(
+            df,
+            use_container_width=True
+        )
+
+        col1,col2,col3=st.columns(3)
+
+        col1.metric(
+            "KG Totales",
+            f"{df['stock_actual_kg'].sum():.1f}"
+        )
+
+        col2.metric(
+            "Comprar",
+            (df["estado"]
+            .str.contains("COMPRAR"))
+            .sum()
+        )
+
+        col3.metric(
+            "Sin stock",
+            (df["estado"]
+            .str.contains("SIN"))
+            .sum()
+        )
+
+        if autorizado:
+            st.metric(
+                "💰 Valor total",
+                f"${stock and pd.DataFrame(stock)['valor_stock'].sum():,.0f}"
+            )
 
 elif menu == "➕ Agregar Rollo":
     st.subheader("Agregar Rollos (ingresá los pesos de cada rollo)")
