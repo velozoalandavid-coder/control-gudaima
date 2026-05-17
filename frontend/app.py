@@ -217,11 +217,10 @@ grafico = (
     .set_index("color")
     ["stock_actual_kg"]
 )
-
         st.bar_chart(grafico)
 
-        st.dataframe( 
-            df,
+        st.dataframe(
+        df,
     use_container_width=True
 )
 elif menu == "➕ Agregar Rollo":
