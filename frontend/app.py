@@ -165,26 +165,53 @@ if menu == "📦 Stock Actual":
             use_container_width=True
         )
 
-        col1,col2,col3=st.columns(3)
+        st.markdown("### 📊 Resumen General")
 
-        col1.metric(
-            "KG Totales",
-            f"{df['stock_actual_kg'].sum():.1f}"
-        )
+col1,col2,col3,col4=st.columns(4)
 
-        col2.metric(
-            "Comprar",
-            (df["estado"]
-            .str.contains("COMPRAR"))
-            .sum()
-        )
+kg_total=round(
+    df["stock_actual_kg"].sum(),1
+)
 
-        col3.metric(
-            "Sin stock",
-            (df["estado"]
-            .str.contains("SIN"))
-            .sum()
-        )
+rollos_total=int(
+    df["rollos_disponibles"].sum()
+)
+
+comprar=int(
+    (df["estado"]
+    .str.contains("COMPRAR"))
+    .sum()
+)
+
+sin_stock=int(
+    (df["estado"]
+    .str.contains("SIN"))
+    .sum()
+)
+
+with col1:
+    st.metric(
+        "⚖️ KG Totales",
+        f"{kg_total}"
+    )
+
+with col2:
+    st.metric(
+        "📦 Rollos",
+        rollos_total
+    )
+
+with col3:
+    st.metric(
+        "🟡 Comprar",
+        comprar
+    )
+
+with col4:
+    st.metric(
+        "🔴 Sin stock",
+        sin_stock
+    )
 
         if autorizado:
             st.metric(
