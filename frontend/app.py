@@ -160,30 +160,30 @@ if menu == "📦 Stock Actual":
                 errors="ignore"
             )
 
-        st.dataframe(
+      st.dataframe(
             df,
             use_container_width=True
         )
 
-                st.markdown("### 📊 Resumen General")
+        st.markdown("### 📊 Resumen General")
 
-        col1,col2,col3,col4=st.columns(4)
+        col1,col2,col3,col4 = st.columns(4)
 
-        kg_total=round(
+        kg_total = round(
             df["stock_actual_kg"].sum(),1
         )
 
-        rollos_total=int(
+        rollos_total = int(
             df["rollos_disponibles"].sum()
         )
 
-        comprar=int(
+        comprar = int(
             (df["estado"]
             .str.contains("COMPRAR"))
             .sum()
         )
 
-        sin_stock=int(
+        sin_stock = int(
             (df["estado"]
             .str.contains("SIN"))
             .sum()
@@ -217,9 +217,6 @@ if menu == "📦 Stock Actual":
             st.metric(
                 "💰 Valor total",
                 f"${pd.DataFrame(stock)['valor_stock'].sum():,.0f}"
-            )
-                "💰 Valor total",
-                f"${stock and pd.DataFrame(stock)['valor_stock'].sum():,.0f}"
             )
 
 elif menu == "➕ Agregar Rollo":
