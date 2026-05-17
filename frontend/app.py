@@ -363,6 +363,7 @@ elif menu == "📋 Ver Rollos":
             except Exception as e:
                 st.error(f"Error: {e}")
 elif menu == "📋 Ver Cortes":
+
     st.subheader("✂️ Historial de Cortes")
 
     cortes = fetch_json("/cortes")
@@ -378,9 +379,9 @@ elif menu == "📋 Ver Cortes":
         df = df.fillna("-")
 
         if buscar:
-            buscar=buscar.lower()
+            buscar = buscar.lower()
 
-            df=df[
+            df = df[
                 df.astype(str)
                 .apply(
                     lambda x:
@@ -392,30 +393,63 @@ elif menu == "📋 Ver Cortes":
 
         for _, corte in df.iterrows():
 
+            try:
+                fecha_linda = pd.to_datetime(
+                    corte["fecha"]
+                ).strftime(
+                    "%d/%m/%Y %H:%M"
+                )
+            except:
+                fecha_linda = corte["fecha"]
+
+            numero = ""
+
+            if "observacion" in corte:
+
+                encontrado = re.search(
+                    r'(\d+)',
+                    str(corte["observacion"])
+                )
+
+                if encontrado:
+                    numero = encontrado.group(1)
+
+            if numero == "":
+                numero="SIN NÚMERO"
+
             st.markdown(f"""
 <div style="
 background:#ffffff;
 color:#111111;
 padding:22px;
 border-radius:18px;
-margin-bottom:16px;
-box-shadow:0 3px 14px rgba(0,0,0,0.10);
+margin-bottom:18px;
+box-shadow:0 4px 18px rgba(0,0,0,0.08);
 border-left:7px solid #e91e63;
 font-size:18px;
 line-height:1.8;
 ">
 
-<h3 style="color:#111111; font-size:30px; font-weight:800;">
-✂️ {corte['observacion']}
+<h3 style="
+font-size:30px;
+font-weight:800;
+margin-bottom:15px;
+">
+✂️ CORTE N. {numero}
 </h3>
 
-<p style="color:#111111;"><b>📅 Fecha:</b> {corte['fecha']}</p>
-<p style="color:#111111;"><b>🧵 Tela:</b> {corte['tipo']}</p>
-<p style="color:#111111;"><b>🎨 Color:</b> {corte['color']}</p>
-<p style="color:#111111;"><b>⚖️ KG usados:</b> {corte['kg_usados']}</p>
-<p style="color:#111111;"><b>📦 Rollos:</b> {corte['rollos_usados']}</p>
+<p><b>📅 Fecha:</b> {fecha_linda}</p>
+
+<p><b>🧵 Tela:</b> {corte['tipo']}</p>
+
+<p><b>🎨 Color:</b> {corte['color']}</p>
+
+<p><b>⚖️ KG usados:</b> {corte['kg_usados']}</p>
+
+<p><b>📦 Rollos:</b> {corte['rollos_usados']}</p>
 
 </div>
+
 """, unsafe_allow_html=True)
 
         st.markdown("---")
@@ -435,13 +469,11 @@ line-height:1.8;
         ):
 
             r=requests.delete(
-            f"{API_URL}/cortes/{int(nro)}"
+                f"{API_URL}/cortes/{int(nro)}"
             )
 
             if r.status_code==200:
-                st.success(
-                    "Eliminado"
-                )
+                st.success("Eliminado")
                 st.rerun()
 
 
