@@ -208,16 +208,17 @@ if menu == "📦 Stock Actual":
 
         st.markdown("### 📈 Top telas por KG")
 
-        grafico = (
-    df.sort_values("stock_actual_kg")
+grafico = (
+    df.sort_values(
+        "stock_actual_kg"
+    )
     .head(10)
-    .set_index("color")["stock_actual_kg"]
+    .set_index(
+        "color"
+    )["stock_actual_kg"]
 )
-            .sum()
-            .sort_values(ascending=False)
-            .head(10)
-        )
 
+st.bar_chart(grafico)
         st.bar_chart(grafico)
 
         st.dataframe(
