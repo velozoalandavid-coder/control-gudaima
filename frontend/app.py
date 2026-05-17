@@ -218,9 +218,9 @@ grafico = (
     ["stock_actual_kg"]
 )
 
-st.bar_chart(grafico)
+        st.bar_chart(grafico)
 
-st.dataframe(
+        st.dataframe(
     df,
     use_container_width=True
 )
