@@ -160,12 +160,7 @@ if menu == "📦 Stock Actual":
                 errors="ignore"
             )
  
-        st.dataframe(
-            df,
-            use_container_width=True
-        )
-
-        st.markdown("### 📊 Resumen General")
+                st.markdown("### 📊 Resumen General")
 
         col1,col2,col3,col4 = st.columns(4)
 
@@ -179,45 +174,42 @@ if menu == "📦 Stock Actual":
 
         comprar = int(
             (df["estado"]
+            .astype(str)
             .str.contains("COMPRAR"))
             .sum()
         )
 
         sin_stock = int(
             (df["estado"]
+            .astype(str)
             .str.contains("SIN"))
             .sum()
         )
 
         with col1:
-            st.metric(
-                "⚖️ KG Totales",
-                f"{kg_total}"
-            )
+            st.metric("⚖️ KG Totales", f"{kg_total}")
 
         with col2:
-            st.metric(
-                "📦 Rollos",
-                rollos_total
-            )
+            st.metric("📦 Rollos", rollos_total)
 
         with col3:
-            st.metric(
-                "🟡 Comprar",
-                comprar
-            )
+            st.metric("🟡 Comprar", comprar)
 
         with col4:
-            st.metric(
-                "🔴 Sin stock",
-                sin_stock
-            )
+            st.metric("🔴 Sin stock", sin_stock)
 
         if autorizado:
             st.metric(
                 "💰 Valor total",
                 f"${pd.DataFrame(stock)['valor_stock'].sum():,.0f}"
             )
+
+        st.divider()
+
+        st.dataframe(
+            df,
+            use_container_width=True
+        )
 
 elif menu == "➕ Agregar Rollo":
     st.subheader("Agregar Rollos (ingresá los pesos de cada rollo)")
