@@ -220,8 +220,8 @@ grafico = (
 
         st.bar_chart(grafico)
 
-        st.dataframe(
-    df,
+        st.dataframe( 
+            df,
     use_container_width=True
 )
 elif menu == "➕ Agregar Rollo":
