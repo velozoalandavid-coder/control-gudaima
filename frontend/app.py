@@ -159,8 +159,8 @@ if menu == "📦 Stock Actual":
                 ],
                 errors="ignore"
             )
-
-      st.dataframe(
+ 
+        st.dataframe(
             df,
             use_container_width=True
         )
