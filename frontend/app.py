@@ -195,7 +195,7 @@ if menu == "📦 Stock Actual":
         with col3:
             st.metric("🟡 Comprar", comprar)
 
-                with col4:
+        with col4:
             st.metric("🔴 Sin stock", sin_stock)
 
         if autorizado:
