@@ -382,31 +382,30 @@ elif menu == "📋 Ver Cortes":
                 )
                 .any(axis=1)
             ]
-grupos = df.groupby("observacion")
+        grupos = df.groupby("observacion")
+
+        for observacion, grupo in grupos:
 
             try:
                 fecha_linda = pd.to_datetime(
-                    corte["fecha"]
-                ).strftime(
-                    "%d/%m/%Y %H:%M"
-                )
+                    grupo.iloc[0]["fecha"]
+                ).strftime("%d/%m/%Y %H:%M")
             except:
-                fecha_linda = corte["fecha"]
+                fecha_linda = grupo.iloc[0]["fecha"]
 
-            numero = ""
+            total_kg = grupo["kg_usados"].sum()
+            total_rollos = grupo["rollos_usados"].sum()
 
-            if "observacion" in corte:
+            filas_html = ""
 
-                encontrado = re.search(
-                    r'(\d+)',
-                    str(corte["observacion"])
-                )
-
-                if encontrado:
-                    numero = encontrado.group(1)
-
-            if numero == "":
-                numero="SIN NÚMERO"
+            for _, fila in grupo.iterrows():
+                filas_html += f"""
+<p>
+🎨 <b>Color:</b> {fila['color']}
+&nbsp;&nbsp; ⚖️ <b>KG:</b> {fila['kg_usados']}
+&nbsp;&nbsp; 📦 <b>Rollos:</b> {fila['rollos_usados']}
+</p>
+"""
 
             st.markdown(f"""
 <div style="
@@ -421,29 +420,24 @@ font-size:18px;
 line-height:1.8;
 ">
 
-<h3 style="
-font-size:30px;
-font-weight:800;
-margin-bottom:15px;
-">
-✂️ CORTE N. {numero}
+<h3 style="font-size:30px;font-weight:800;">
+✂️ {observacion}
 </h3>
 
 <p><b>📅 Fecha:</b> {fecha_linda}</p>
+<p><b>🧵 Tela:</b> {grupo.iloc[0]['tipo']}</p>
 
-<p><b>🧵 Tela:</b> {corte['tipo']}</p>
+<hr>
 
-<p><b>🎨 Color:</b> {corte['color']}</p>
+{filas_html}
 
-<p><b>⚖️ KG usados:</b> {corte['kg_usados']}</p>
+<hr>
 
-<p><b>📦 Rollos:</b> {corte['rollos_usados']}</p>
+<p><b>⚖️ Total KG:</b> {total_kg}</p>
+<p><b>📦 Total rollos:</b> {total_rollos}</p>
 
 </div>
-
 """, unsafe_allow_html=True)
-
-        st.markdown("---")
 
         st.subheader(
             "🗑️ Eliminar Corte"
