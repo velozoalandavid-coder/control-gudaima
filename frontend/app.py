@@ -160,7 +160,7 @@ if menu == "📦 Stock Actual":
                 errors="ignore"
             )
  
-                st.markdown("### 📊 Resumen General")
+        st.markdown("### 📊 Resumen General")
 
         col1,col2,col3,col4 = st.columns(4)
 
