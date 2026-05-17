@@ -14,123 +14,53 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
-html, body, [class*="css"]{
-    font-family:'Inter',sans-serif;
+.stApp {
+    background: #f6f4f1;
 }
 
-.stApp{
-    background:linear-gradient(
-    180deg,
-    #f8f9fc 0%,
-    #ffffff 100%
-    );
+section[data-testid="stSidebar"] {
+    background: #10131f;
 }
 
-/* sidebar */
-
-section[data-testid="stSidebar"]{
-    background:
-    linear-gradient(
-    180deg,
-    #0b0b14,
-    #12182c
-    );
-
-    border-right:
-    1px solid #222;
+section[data-testid="stSidebar"] * {
+    color: white !important;
 }
 
-/* botones */
-
-.stButton>button{
-background:#e91e63;
-color:white;
-border:none;
-border-radius:12px;
-font-weight:700;
-padding:.6rem 1.5rem;
-box-shadow:
-0 5px 18px rgba(
-233,
-30,
-99,
-0.35
-);
+h1, h2, h3 {
+    color: #1c1c1c !important;
+    font-weight: 800 !important;
 }
 
-.stButton>button:hover{
-
-background:#ff2f7b;
-transform:
-translateY(-2px);
-
+.stButton > button {
+    background: #d4145a !important;
+    color: white !important;
+    border-radius: 12px !important;
+    border: none !important;
+    padding: 10px 22px !important;
+    font-weight: 700 !important;
 }
-
-/* inputs */
 
 .stTextInput input,
 .stTextArea textarea,
-.stSelectbox div,
-.stNumberInput input{
-
-background:white!important;
-color:#111!important;
-border-radius:12px!important;
-border:1px solid #ececec!important;
-
+.stNumberInput input {
+    background: white !important;
+    color: #111 !important;
+    border: 1px solid #d8d8d8 !important;
+    border-radius: 10px !important;
 }
 
-/* tablas */
-
-[data-testid="stDataFrame"]{
-
-background:white;
-padding:10px;
-border-radius:18px;
-
-box-shadow:
-0 5px 20px rgba(
-0,0,0,.05);
-
+div[data-baseweb="select"] > div {
+    background: white !important;
+    color: #111 !important;
+    border: 1px solid #d8d8d8 !important;
+    border-radius: 10px !important;
 }
 
-/* tarjetas */
-
-.card{
-
-background:white;
-
-padding:25px;
-
-border-radius:18px;
-
-box-shadow:
-0 6px 20px rgba(
-0,0,0,.05);
-
-margin-bottom:20px;
-
-border-left:
-6px solid #e91e63;
-
+label, p, span, div {
+    color: #111;
 }
-
-h1{
-
-font-size:48px!important;
-
-font-weight:800!important;
-
-color:#111;
-
-}
-
 </style>
 """, unsafe_allow_html=True)
-
 logo_ruta = "static/logo.png"
 if os.path.exists(logo_ruta):
     st.sidebar.image(logo_ruta, width=220)
