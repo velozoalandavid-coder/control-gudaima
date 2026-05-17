@@ -14,58 +14,120 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    html, body, [class*="css"] {
-        font-family: 'Inter', sans-serif;
-    }
-    .stApp {
-        background-color: #fafafa;
-    }
-    .css-1d391kg, .css-163ttbj, .css-1wrcr25 {
-        background-color: #ffffff;
-        border-right: 1px solid #f0f0f0;
-    }
-    h1 {
-        color: #1a1a1a;
-        font-weight: 600;
-        font-size: 1.8rem;
-        margin-bottom: 0.5rem;
-    }
-    h2, h3 {
-        color: #2d2d2d;
-        font-weight: 500;
-    }
-    .stMetric {
-        background-color: white;
-        border-radius: 12px;
-        padding: 1rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-    .stButton>button {
-        background-color: #e91e63;
-        color: white;
-        border-radius: 8px;
-        border: none;
-        font-weight: 500;
-        padding: 0.5rem 1.5rem;
-        transition: all 0.2s ease;
-        letter-spacing: 0.3px;
-    }
-    .stButton>button:hover {
-        background-color: #d81b60;
-        box-shadow: 0 4px 12px rgba(233,30,99,0.3);
-    }
-    .stDataFrame {
-        border-radius: 12px;
-        overflow: hidden;
-        border: 1px solid #eaeaea;
-    }
-    .stTextInput>div>div>input, .stNumberInput>div>div>input, .stTextArea>textarea {
-        border-radius: 8px;
-        border: 1px solid #dddddd;
-    }
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+html, body, [class*="css"]{
+    font-family:'Inter',sans-serif;
+}
+
+.stApp{
+    background:linear-gradient(
+    180deg,
+    #f8f9fc 0%,
+    #ffffff 100%
+    );
+}
+
+/* sidebar */
+
+section[data-testid="stSidebar"]{
+    background:
+    linear-gradient(
+    180deg,
+    #0b0b14,
+    #12182c
+    );
+
+    border-right:
+    1px solid #222;
+}
+
+/* botones */
+
+.stButton>button{
+background:#e91e63;
+color:white;
+border:none;
+border-radius:12px;
+font-weight:700;
+padding:.6rem 1.5rem;
+box-shadow:
+0 5px 18px rgba(
+233,
+30,
+99,
+0.35
+);
+}
+
+.stButton>button:hover{
+
+background:#ff2f7b;
+transform:
+translateY(-2px);
+
+}
+
+/* inputs */
+
+.stTextInput input,
+.stTextArea textarea,
+.stSelectbox div,
+.stNumberInput input{
+
+background:white!important;
+color:#111!important;
+border-radius:12px!important;
+border:1px solid #ececec!important;
+
+}
+
+/* tablas */
+
+[data-testid="stDataFrame"]{
+
+background:white;
+padding:10px;
+border-radius:18px;
+
+box-shadow:
+0 5px 20px rgba(
+0,0,0,.05);
+
+}
+
+/* tarjetas */
+
+.card{
+
+background:white;
+
+padding:25px;
+
+border-radius:18px;
+
+box-shadow:
+0 6px 20px rgba(
+0,0,0,.05);
+
+margin-bottom:20px;
+
+border-left:
+6px solid #e91e63;
+
+}
+
+h1{
+
+font-size:48px!important;
+
+font-weight:800!important;
+
+color:#111;
+
+}
+
 </style>
 """, unsafe_allow_html=True)
 
