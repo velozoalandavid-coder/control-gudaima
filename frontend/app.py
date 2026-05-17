@@ -382,8 +382,7 @@ elif menu == "📋 Ver Cortes":
                 )
                 .any(axis=1)
             ]
-
-        for _, corte in df.iterrows():
+grupos = df.groupby("observacion")
 
             try:
                 fecha_linda = pd.to_datetime(
