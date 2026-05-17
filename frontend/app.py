@@ -403,7 +403,7 @@ box-shadow:0 2px 12px rgba(0,0,0,0.08);
 border-left:6px solid #e91e63;
 ">
 
-<h3>✂️ Corte N° {int(corte['nro_corte'])}</h3>
+<h3>✂️ {corte['observacion']}</h3>
 
 <b>📅 Fecha:</b>
 {corte['fecha']}
@@ -430,8 +430,7 @@ border-left:6px solid #e91e63;
 
 <br>
 
-<b>📝 Observación:</b>
-{corte['observacion']}
+
 
 </div>
 """,
