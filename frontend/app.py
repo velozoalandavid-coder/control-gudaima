@@ -210,21 +210,20 @@ if menu == "📦 Stock Actual":
 
 grafico = (
     df.sort_values(
-        "stock_actual_kg"
+        "stock_actual_kg",
+        ascending=False
     )
     .head(10)
-    .set_index(
-        "color"
-    )["stock_actual_kg"]
+    .set_index("color")
+    ["stock_actual_kg"]
 )
 
 st.bar_chart(grafico)
-        st.bar_chart(grafico)
 
-        st.dataframe(
-            df,
-            use_container_width=True
-        )
+st.dataframe(
+    df,
+    use_container_width=True
+)
 elif menu == "➕ Agregar Rollo":
     st.subheader("Agregar Rollos (ingresá los pesos de cada rollo)")
 
