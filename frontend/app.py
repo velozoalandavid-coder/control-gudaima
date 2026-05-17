@@ -195,10 +195,10 @@ if menu == "📦 Stock Actual":
         with col3:
             st.metric("🟡 Comprar", comprar)
 
-        with col4:
+                with col4:
             st.metric("🔴 Sin stock", sin_stock)
 
-                if autorizado:
+        if autorizado:
             st.metric(
                 "💰 Valor total",
                 f"${pd.DataFrame(stock)['valor_stock'].sum():,.0f}"
