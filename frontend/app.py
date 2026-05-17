@@ -220,9 +220,14 @@ grafico = (
         st.bar_chart(grafico)
 
         st.dataframe(
-        df,
-    use_container_width=True
-)
+            df,
+            use_container_width=True
+        )
+
+elif menu == "➕ Agregar Rollo":
+    st.subheader(
+        "Agregar Rollos (ingresá los pesos de cada rollo)"
+    )
 elif menu == "➕ Agregar Rollo":
     st.subheader("Agregar Rollos (ingresá los pesos de cada rollo)")
 
