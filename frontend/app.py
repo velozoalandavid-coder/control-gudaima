@@ -205,7 +205,19 @@ if menu == "📦 Stock Actual":
             )
 
         st.divider()
+st.markdown("### 📈 Top telas por KG")
 
+grafico = (
+    df.groupby("tipo")
+    ["stock_actual_kg"]
+    .sum()
+    .sort_values(
+        ascending=False
+    )
+    .head(10)
+)
+
+st.bar_chart(grafico)
         st.dataframe(
             df,
             use_container_width=True
