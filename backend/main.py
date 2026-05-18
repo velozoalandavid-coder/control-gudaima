@@ -193,6 +193,10 @@ def crear_rollo(rollo: RolloCreate, db: Session = Depends(get_db)):
     db.refresh(nuevo)
     return nuevo
 
+@app.get("/rollos", response_model=List[RolloResponse])
+def get_rollos(db: Session = Depends(get_db)):
+    return db.query(Rollo).all()
+
 class RolloLote(BaseModel):
     codigo_tela: float
     tipo: str
