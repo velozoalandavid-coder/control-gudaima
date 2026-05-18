@@ -399,6 +399,7 @@ elif menu == "📋 Ver Rollos":
                     st.error(r.json().get("detail", "Error al eliminar"))
             except Exception as e:
                 st.error(f"Error: {e}")
+
 elif menu == "📋 Ver Corttes":
     st.subheader("✂️ Historial de Cortes")
 
@@ -460,7 +461,6 @@ box-shadow:0 4px 15px rgba(0,0,0,.08);
 
     except Exception as e:
         st.error(f"Error: {e}")
-
 
 elif menu == "➕ Agregar Tela":
     st.subheader("Agregar Nueva Tela al Catálogo")
