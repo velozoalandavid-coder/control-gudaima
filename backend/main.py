@@ -21,14 +21,13 @@ app = FastAPI(title="Textil API")
 @app.on_event("startup")
 def startup():
     Base.metadata.create_all(bind=engine)
-    
+
     db = SessionLocal()
 
-    if db.query(Tela).count() == 0:
-        try:
+    try:
+        if db.query(Tela).count() == 0:
             telas_df = pd.read_csv("telas.csv")
             rollos_df = pd.read_csv("rollos.csv")
-            cortes_df = pd.read_csv("cortes.csv")
 
             for _, row in telas_df.iterrows():
                 db.add(Tela(
@@ -54,8 +53,7 @@ def startup():
 
             db.commit()
 
-    if db.query(Corte).count() == 0:
-        try:
+        if db.query(Corte).count() == 0:
             cortes_df = pd.read_csv("cortes.csv")
 
             for _, row in cortes_df.iterrows():
@@ -67,25 +65,18 @@ def startup():
                     color=row["color"],
                     kg_usados=float(row["kg_usados"]),
                     rollos_usados=int(row["rollos_usados"]),
-                    observacion=row.get("observacion","")
+                    observacion=row.get("observacion", "")
                 ))
 
             db.commit()
 
-        except Exception as e:
-            print("ERROR CORTES:", e)
-
-        db.commit()
+        print("CSV cargados correctamente")
 
     except Exception as e:
-        print("ERROR CORTES:", e)
+        print("ERROR:", e)
 
-            print("CSV cargados correctamente")
-
-        except Exception as e:
-            print("ERROR:", e)
-
-    db.close()
+    finally:
+        db.close()
 
 # Endpoints de consulta
 @app.get("/telas")
