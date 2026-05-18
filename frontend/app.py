@@ -230,22 +230,10 @@ elif menu == "➕ Agregar Rollo":
         "Agregar Rollos (ingresá los pesos de cada rollo)"
     )
 
-    # Mostrar mensaje de éxito diferido (si existe)
     if "mensaje_rollo" in st.session_state and st.session_state.mensaje_rollo:
         st.success(st.session_state.mensaje_rollo)
         
-elif menu == "➕ Agregar Rollo":
-    st.subheader(
-        "Agregar Rollos (ingresá los pesos de cada rollo)"
-
-
-    # Mostrar mensaje de éxito diferido (si existe)
-    if "mensaje_rollo" in st.session_state and st.session_state.mensaje_rollo:
-        st.success(st.session_state.mensaje_rollo)
-        st.balloons()
-        # Limpiar el mensaje para que no se repita
-        st.session_state.mensaje_rollo = ""
-
+   
     telas = fetch_json("/telas")
     if telas:
         opciones = [f"{t['codigo_tela']} - {t['tipo']} - {t['color']}" for t in telas]
