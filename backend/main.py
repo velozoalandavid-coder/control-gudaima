@@ -249,7 +249,6 @@ def crear_corte_lote(corte_lote: CorteLote, db: Session = Depends(get_db)):
         "mensaje": "Corte registrado",
         "numero": siguiente_nro
     }
-
 @app.get("/rollos", response_model=List[RolloResponse])
 def get_rollos(db: Session = Depends(get_db)):
     return db.query(Rollo).all()
@@ -275,39 +274,7 @@ class CorteLote(BaseModel):
     detalles: List[CorteDetalleItem]
     observacion: Optional[str] = None
 
-@app.post("/cortes/lote")
-def crear_corte_lote(corte_lote: CorteLote, db: Session = Depends(get_db)):
-    cortes_creados = []
-    for det in corte_lote.detalles:
-        tela = db.query(Tela).filter_by(
-            codigo_tela=det.codigo_tela, tipo=det.tipo, color=det.color
-        ).first()
-        if not tela:
-            raise HTTPException(status_code=400, detail=f"Tela no existe: {det.codigo_tela} - {det.tipo} - {det.color}")
-        # Validar stock
-        stock_items = [s for s in get_stock(db) if s.codigo_tela == det.codigo_tela and s.tipo == det.tipo and s.color == det.color]
-        if not stock_items:
-            raise HTTPException(status_code=400, detail=f"Sin stock para {det.tipo} {det.color}")
-        stock = stock_items[0]
-        if det.kg_usados > stock.stock_actual_kg:
-            raise HTTPException(status_code=400, detail=f"Stock insuficiente para {det.tipo} {det.color} (disponible {stock.stock_actual_kg} kg)")
-        if det.rollos_usados > stock.rollos_disponibles:
-            raise HTTPException(status_code=400, detail=f"Rollos insuficientes para {det.tipo} {det.color} (disponibles {stock.rollos_disponibles})")
-        
-        nuevo_corte = Corte(
-            fecha=datetime.utcnow(),
-            codigo_tela=det.codigo_tela,
-            tipo=det.tipo,
-            color=det.color,
-            kg_usados=det.kg_usados,
-            rollos_usados=det.rollos_usados,
-            observacion=corte_lote.observacion
-        )
-        db.add(nuevo_corte)
-        db.flush()
-        cortes_creados.append(nuevo_corte.nro_corte)
-    db.commit()
-    return {"mensaje": f"{len(cortes_creados)} cortes registrados", "numeros_corte": cortes_creados}
+
 # -------------------- FIN NUEVO --------------------
 
 # Cortes (endpoint individual original se mantiene)
