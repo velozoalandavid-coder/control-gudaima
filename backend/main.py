@@ -21,9 +21,6 @@ app = FastAPI(title="Textil API")
 @app.on_event("startup")
 def startup():
     Base.metadata.create_all(bind=engine)
-
-    Corte.__table__.drop(bind=engine, checkfirst=True)
-    Base.metadata.create_all(bind=engine)
     
     db = SessionLocal()
 
