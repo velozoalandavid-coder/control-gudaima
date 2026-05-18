@@ -544,4 +544,3 @@ elif menu == "🗑️ Eliminar Tela":
                     st.error(f"Error: {e}")
         else:
             st.info("No hay telas para eliminar.")
-Versión estable Control GUDAIMA
