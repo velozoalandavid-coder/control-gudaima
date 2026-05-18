@@ -400,7 +400,7 @@ elif menu == "📋 Ver Rollos":
             except Exception as e:
                 st.error(f"Error: {e}")
 
-elif menu == "📋 Ver Corttes":
+elif menu == "📋 Ver Cortes":
     st.subheader("✂️ Historial de Cortes")
 
     try:
