@@ -400,37 +400,37 @@ elif menu == "📋 Ver Rollos":
             except Exception as e:
                 st.error(f"Error: {e}")
 elif menu == "📋 Ver Cortes":
-
     st.subheader("✂️ Historial de Cortes")
 
-    cortes = fetch_json("/cortes")
+    try:
+        resp = requests.get(f"{API_URL}/cortes")
+        resp.raise_for_status()
 
-    if cortes:
+        cortes = resp.json()
 
-        buscar = st.text_input(
-            "🔎 Buscar corte, tela o color"
-        )
+        if len(cortes) == 0:
+            st.info("No hay cortes cargados")
 
-        df = pd.DataFrame(cortes)
+        for corte in cortes:
+            st.markdown(f"""
+### ✂️ CORTE N.{corte["nro_corte"]}
 
-        df = df.fillna("-")
+📅 Fecha: {corte["fecha"]}
 
-        if buscar:
-            buscar = buscar.lower()
+🧵 Tela: {corte["tipo"]}
 
-            df = df[
-                df.astype(str)
-                .apply(
-                    lambda x:
-                    x.str.lower()
-                    .str.contains(buscar)
-                )
-                .any(axis=1)
-            ]
-        grupos = df.groupby("observacion")
+🎨 Color: {corte["color"]}
 
-        for observacion, grupo in grupos:
+⚖️ KG: {corte["kg_usados"]}
 
+📦 Rollos: {corte["rollos_usados"]}
+
+📝 Obs: {corte.get("observacion","")}
+---
+""")
+
+    except Exception as e:
+        st.error(f"Error: {e}")
             try:
                 fecha_linda = pd.to_datetime(
                     grupo.iloc[0]["fecha"]
