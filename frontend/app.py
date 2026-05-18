@@ -227,9 +227,7 @@ grafico = (
 elif menu == "➕ Agregar Rollo":
     st.subheader(
         "Agregar Rollos (ingresá los pesos de cada rollo)"
-    )
-elif menu == "➕ Agregar Rollo":
-    st.subheader("Agregar Rollos (ingresá los pesos de cada rollo)")
+
 
     # Mostrar mensaje de éxito diferido (si existe)
     if "mensaje_rollo" in st.session_state and st.session_state.mensaje_rollo:
