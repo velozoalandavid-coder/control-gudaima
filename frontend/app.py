@@ -196,34 +196,43 @@ if menu == "📦 Stock Actual":
             st.metric("🟡 Comprar", comprar)
 
         with col4:
-            st.metric("🔴 Sin stock", sin_stock)
+    st.metric("🔴 Sin stock", sin_stock)
 
-    if autorizado:
-            st.metric(
-                "💰 Valor total",
-                f"${pd.DataFrame(stock)['valor_stock'].sum():,.0f}"
-            )
+if autorizado:
+    st.metric(
+        "💰 Valor total",
+        f"${pd.DataFrame(stock)['valor_stock'].sum():,.0f}"
+    )
 
-            st.divider()
+    st.divider()
 
-            st.markdown("### 📈 Top telas por KG")
+    st.markdown("### 📈 Top telas por KG")
 
-            grafico = (
-            df.sort_values(
-                "stock_actual_kg",
-                ascending=False
-            )
-            .head(10)
-            .set_index("color")
-            ["stock_actual_kg"]
+    grafico = (
+        df.sort_values(
+            "stock_actual_kg",
+            ascending=False
         )
+        .head(10)
+        .set_index("color")
+        ["stock_actual_kg"]
+    )
 
-            st.bar_chart(grafico)
+    st.bar_chart(grafico)
 
-            st.dataframe(
-            df,
-            use_container_width=True
-        )
+    st.dataframe(
+        df,
+        use_container_width=True
+    )
+
+elif menu == "➕ Agregar Rollo":
+    st.subheader(
+        "Agregar Rollos (ingresá los pesos de cada rollo)"
+    )
+
+    # Mostrar mensaje de éxito diferido (si existe)
+    if "mensaje_rollo" in st.session_state and st.session_state.mensaje_rollo:
+        st.success(st.session_state.mensaje_rollo)
         
 elif menu == "➕ Agregar Rollo":
     st.subheader(
