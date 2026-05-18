@@ -204,7 +204,7 @@ if menu == "📦 Stock Actual":
                 f"${pd.DataFrame(stock)['valor_stock'].sum():,.0f}"
             )
 
-               st.divider()
+             st.divider()
 
         st.markdown("### 📈 Top telas por KG")
 
