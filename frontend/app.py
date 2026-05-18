@@ -430,7 +430,7 @@ elif menu == "📋 Ver Cortes":
             🧵 Tela: {primero["tipo"]}
             """)
 
-            for x in items:
+        for x in items:
 
             st.markdown(f"""
             🎨 Color: {x["color"]}
