@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 import os
 import re
+from collections import defaultdict
 
 API_URL = os.getenv("API_URL", "http://backend:8000")
 
@@ -412,8 +413,6 @@ elif menu == "📋 Ver Cortes":
         if not cortes:
             st.info("No hay cortes cargados")
 
-        from collections import defaultdict
-
 grupos = defaultdict(list)
 
 for c in cortes:
@@ -442,26 +441,6 @@ for nombre, items in grupos.items():
 
         ---
         """)
-            st.markdown(f"""
-<div style="
-background:#ffffff;
-padding:20px;
-border-radius:18px;
-margin-bottom:18px;
-border-left:6px solid #e91e63;
-box-shadow:0 4px 15px rgba(0,0,0,.08);
-">
-
-<h3>✂️ CORTE N.{corte["nro_corte"]}</h3>
-
-📅 <b>Fecha:</b> {fecha}<br>
-🧵 <b>Tela:</b> {corte["tipo"]}<br>
-🎨 <b>Color:</b> {corte["color"]}<br>
-⚖️ <b>KG:</b> {corte["kg_usados"]}<br>
-📦 <b>Rollos:</b> {corte["rollos_usados"]}<br>
-📝 <b>Obs:</b> {corte.get("observacion","")}
-</div>
-""", unsafe_allow_html=True)
 
         st.subheader("🗑️ Eliminar Corte")
 
