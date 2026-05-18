@@ -319,9 +319,3 @@ class CorteDetalleItem(BaseModel):
 class CorteLote(BaseModel):
     detalles: List[CorteDetalleItem]
     observacion: Optional[str] = None
-from database import engine
-from sqlalchemy import text
-
-with engine.connect() as conn:
-    conn.execute(text("DROP TABLE IF EXISTS cortes"))
-    conn.commit()
