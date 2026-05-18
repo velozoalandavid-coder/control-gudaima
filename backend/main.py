@@ -54,7 +54,7 @@ def startup():
 
             db.commit()
 
-            if db.query(Corte).count() == 0:
+    if db.query(Corte).count() == 0:
         try:
             cortes_df = pd.read_csv("cortes.csv")
 
