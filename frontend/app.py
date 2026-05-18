@@ -208,7 +208,7 @@ if menu == "📦 Stock Actual":
 
             st.markdown("### 📈 Top telas por KG")
 
-        grafico = (
+            grafico = (
             df.sort_values(
                 "stock_actual_kg",
                 ascending=False
