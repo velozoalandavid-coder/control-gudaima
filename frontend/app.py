@@ -401,93 +401,49 @@ elif menu == "📋 Ver Rollos":
             except Exception as e:
                 st.error(f"Error: {e}")
 
-elif menu == "📄 Ver Cortes":
-    st.subheader("✂ Historial de Cortes")
+elif menu == "📋 Ver Cortes":
+    st.subheader("✂️ Historial de Cortes")
 
     try:
         resp = requests.get(f"{API_URL}/cortes")
         resp.raise_for_status()
-
         cortes = resp.json()
 
         if not cortes:
             st.info("No hay cortes cargados")
+        else:
+            grupos = defaultdict(list)
 
-        grupos = defaultdict(list)
+            for c in cortes:
+                clave = c.get("observacion") or f"CORTE N.{c['nro_corte']}"
+                grupos[clave].append(c)
 
-        for c in cortes:
-            obs = c.get("observacion", "")
-            clave = obs if obs else f"CORTE {c['nro_corte']}"
-            grupos[clave].append(c)
+            for nombre, items in grupos.items():
+                primero = items[0]
 
-        for nombre, items in grupos.items():
-            primero = items[0]
+                st.markdown(f"## ✂️ {nombre}")
+                st.write("📅 Fecha:", primero["fecha"][:16])
+                st.write("🧵 Tela:", primero["tipo"])
 
-            try:
-                fecha = pd.to_datetime(
-                    primero["fecha"]
-                ).strftime("%d/%m/%Y %H:%M")
-            except Exception:
-                fecha = primero["fecha"]
+                for x in items:
+                    st.write("🎨 Color:", x["color"])
+                    st.write("⚖️ KG:", x["kg_usados"])
+                    st.write("📦 Rollos:", x["rollos_usados"])
 
-            total_kg = round(
-                sum(float(x.get("kg_usados", 0)) for x in items),
-                2
-            )
-
-            total_rollos = int(
-                sum(int(x.get("rollos_usados", 0)) for x in items)
-            )
-
-            st.markdown(f"""
-<div style="
-background:#ffffff;
-padding:20px;
-border-radius:18px;
-margin-bottom:18px;
-border-left:6px solid #e91e63;
-box-shadow:0 4px 15px rgba(0,0,0,.08);
-">
-
-<h3>✂ {nombre}</h3>
-
-📅 <b>Fecha:</b> {fecha}<br>
-🧵 <b>Tela:</b> {primero["tipo"]}<br>
-⚖️ <b>Total KG:</b> {total_kg}<br>
-📦 <b>Total rollos:</b> {total_rollos}<br>
-</div>
-""", unsafe_allow_html=True)
-
-            for x in items:
-                st.markdown(f"""
-- 🎨 **Color:** {x["color"]}
-- ⚖️ **KG:** {x["kg_usados"]}
-- 📦 **Rollos:** {x["rollos_usados"]}
-""")
-
-            st.divider()
+                st.divider()
 
         st.subheader("🗑️ Eliminar Corte")
 
-        nro = st.number_input(
-            "Número",
-            min_value=1,
-            step=1
-        )
+        nro = st.number_input("Número", min_value=1, step=1)
 
         if st.button("Eliminar Corte"):
-            r = requests.delete(
-                f"{API_URL}/cortes/{int(nro)}"
-            )
+            r = requests.delete(f"{API_URL}/cortes/{int(nro)}")
 
             if r.status_code == 200:
                 st.success("Eliminado")
                 st.rerun()
             else:
-                try:
-                    st.error(r.json().get("detail", "Error al eliminar"))
-                except Exception:
-                    st.error("Error al eliminar")
+                st.error(r.text)
 
     except Exception as e:
         st.error(f"Error: {e}")
