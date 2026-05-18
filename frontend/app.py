@@ -399,7 +399,7 @@ elif menu == "📋 Ver Rollos":
                     st.error(r.json().get("detail", "Error al eliminar"))
             except Exception as e:
                 st.error(f"Error: {e}")
-elif menu == "📋 Ver Cortes":
+elif menu == "📋 Ver Corttes":
     st.subheader("✂️ Historial de Cortes")
 
     try:
@@ -408,96 +408,48 @@ elif menu == "📋 Ver Cortes":
 
         cortes = resp.json()
 
-        if len(cortes) == 0:
+        if not cortes:
             st.info("No hay cortes cargados")
 
         for corte in cortes:
-            st.markdown(f"""
-### ✂️ CORTE N.{corte["nro_corte"]}
 
-📅 Fecha: {corte["fecha"]}
-
-🧵 Tela: {corte["tipo"]}
-
-🎨 Color: {corte["color"]}
-
-⚖️ KG: {corte["kg_usados"]}
-
-📦 Rollos: {corte["rollos_usados"]}
-
-📝 Obs: {corte.get("observacion","")}
----
-""")
-
-    except Exception as e:
-        st.error(f"Error: {e}")
             try:
-                fecha_linda = pd.to_datetime(
-                    grupo.iloc[0]["fecha"]
+                fecha = pd.to_datetime(
+                    corte["fecha"]
                 ).strftime("%d/%m/%Y %H:%M")
             except:
-                fecha_linda = grupo.iloc[0]["fecha"]
-
-            total_kg = grupo["kg_usados"].sum()
-            total_rollos = grupo["rollos_usados"].sum()
-
-            filas_html = ""
-
-            for _, fila in grupo.iterrows():
-                filas_html += f"""
-<p>
-🎨 <b>Color:</b> {fila['color']}
-&nbsp;&nbsp; ⚖️ <b>KG:</b> {fila['kg_usados']}
-&nbsp;&nbsp; 📦 <b>Rollos:</b> {fila['rollos_usados']}
-</p>
-"""
+                fecha = corte["fecha"]
 
             st.markdown(f"""
 <div style="
 background:#ffffff;
-color:#111111;
-padding:22px;
+padding:20px;
 border-radius:18px;
 margin-bottom:18px;
-box-shadow:0 4px 18px rgba(0,0,0,0.08);
-border-left:7px solid #e91e63;
-font-size:18px;
-line-height:1.8;
+border-left:6px solid #e91e63;
+box-shadow:0 4px 15px rgba(0,0,0,.08);
 ">
 
-<h3 style="font-size:30px;font-weight:800;">
-✂️ {observacion}
-</h3>
+<h3>✂️ CORTE N.{corte["nro_corte"]}</h3>
 
-<p><b>📅 Fecha:</b> {fecha_linda}</p>
-<p><b>🧵 Tela:</b> {grupo.iloc[0]['tipo']}</p>
-
-<hr>
-
-{filas_html}
-
-<hr>
-
-<p><b>⚖️ Total KG:</b> {total_kg}</p>
-<p><b>📦 Total rollos:</b> {total_rollos}</p>
-
+📅 <b>Fecha:</b> {fecha}<br>
+🧵 <b>Tela:</b> {corte["tipo"]}<br>
+🎨 <b>Color:</b> {corte["color"]}<br>
+⚖️ <b>KG:</b> {corte["kg_usados"]}<br>
+📦 <b>Rollos:</b> {corte["rollos_usados"]}<br>
+📝 <b>Obs:</b> {corte.get("observacion","")}
 </div>
 """, unsafe_allow_html=True)
 
-        st.subheader(
-            "🗑️ Eliminar Corte"
-        )
+        st.subheader("🗑️ Eliminar Corte")
 
-        nro=st.number_input(
+        nro = st.number_input(
             "Número",
             min_value=1,
             step=1
         )
 
-        if st.button(
-            "Eliminar Corte"
-        ):
-
+        if st.button("Eliminar Corte"):
             r=requests.delete(
                 f"{API_URL}/cortes/{int(nro)}"
             )
@@ -505,6 +457,9 @@ line-height:1.8;
             if r.status_code==200:
                 st.success("Eliminado")
                 st.rerun()
+
+    except Exception as e:
+        st.error(f"Error: {e}")
 
 
 elif menu == "➕ Agregar Tela":
