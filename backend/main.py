@@ -187,11 +187,26 @@ class RolloLote(BaseModel):
     pesos: List[float]
     observacion: Optional[str] = None
 
-@app.post("/cortes/lote")
-def crear_corte_lote(corte_lote: CorteLote, db: Session = Depends(get_db)):
-    cortes_creados = []
+# -------------------- NUEVO: Corte con detalle por rollo --------------------
 
-    # obtiene último nro y genera el siguiente
+class CorteDetalleItem(BaseModel):
+    codigo_tela: float
+    tipo: str
+    color: str
+    kg_usados: float
+    rollos_usados: int
+
+class CorteLote(BaseModel):
+    detalles: List[CorteDetalleItem]
+    observacion: Optional[str] = None
+
+
+@app.post("/cortes/lote")
+def crear_corte_lote(
+    corte_lote: CorteLote,
+    db: Session = Depends(get_db)
+):
+
     ultimo = db.query(func.max(Corte.nro_corte)).scalar()
     siguiente_nro = (ultimo or 0) + 1
 
@@ -249,31 +264,6 @@ def crear_corte_lote(corte_lote: CorteLote, db: Session = Depends(get_db)):
         "mensaje": "Corte registrado",
         "numero": siguiente_nro
     }
-@app.get("/rollos", response_model=List[RolloResponse])
-def get_rollos(db: Session = Depends(get_db)):
-    return db.query(Rollo).all()
-
-@app.delete("/rollos/{id_rollo}")
-def eliminar_rollo(id_rollo: int, db: Session = Depends(get_db)):
-    rollo = db.query(Rollo).filter(Rollo.id_rollo == id_rollo).first()
-    if not rollo:
-        raise HTTPException(status_code=404, detail="Rollo no encontrado")
-    db.delete(rollo)
-    db.commit()
-    return {"mensaje": f"Rollo {id_rollo} eliminado"}
-
-# -------------------- NUEVO: Corte con detalle por rollo (colores diferentes) --------------------
-class CorteDetalleItem(BaseModel):
-    codigo_tela: float
-    tipo: str
-    color: str
-    kg_usados: float
-    rollos_usados: int
-
-class CorteLote(BaseModel):
-    detalles: List[CorteDetalleItem]
-    observacion: Optional[str] = None
-
 
 # -------------------- FIN NUEVO --------------------
 
@@ -308,14 +298,3 @@ def get_cortes(db: Session = Depends(get_db)):
 from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
-
-class CorteDetalleItem(BaseModel):
-    codigo_tela: float
-    tipo: str
-    color: str
-    kg_usados: float
-    rollos_usados: int
-
-class CorteLote(BaseModel):
-    detalles: List[CorteDetalleItem]
-    observacion: Optional[str] = None
