@@ -204,26 +204,27 @@ if menu == "📦 Stock Actual":
                 f"${pd.DataFrame(stock)['valor_stock'].sum():,.0f}"
             )
 
-        st.divider()
+               st.divider()
 
         st.markdown("### 📈 Top telas por KG")
 
-grafico = (
-    df.sort_values(
-        "stock_actual_kg",
-        ascending=False
-    )
-    .head(10)
-    .set_index("color")
-    ["stock_actual_kg"]
-)
+        grafico = (
+            df.sort_values(
+                "stock_actual_kg",
+                ascending=False
+            )
+            .head(10)
+            .set_index("color")
+            ["stock_actual_kg"]
+        )
+
         st.bar_chart(grafico)
 
         st.dataframe(
             df,
             use_container_width=True
         )
-
+        
 elif menu == "➕ Agregar Rollo":
     st.subheader(
         "Agregar Rollos (ingresá los pesos de cada rollo)"
