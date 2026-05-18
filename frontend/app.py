@@ -198,32 +198,32 @@ if menu == "📦 Stock Actual":
         with col4:
             st.metric("🔴 Sin stock", sin_stock)
 
-        if autorizado:
+                if autorizado:
             st.metric(
                 "💰 Valor total",
                 f"${pd.DataFrame(stock)['valor_stock'].sum():,.0f}"
             )
 
-            st.divider()
+        st.divider()
 
-            st.markdown("### 📈 Top telas por KG")
+        st.markdown("### 📈 Top telas por KG")
 
-            grafico = (
-                df.sort_values(
-                    "stock_actual_kg",
-                    ascending=False
+        grafico = (
+            df.sort_values(
+                "stock_actual_kg",
+                ascending=False
             )
             .head(10)
             .set_index("color")
             ["stock_actual_kg"]
-    )
+        )
 
-    st.bar_chart(grafico)
+        st.bar_chart(grafico)
 
-    st.dataframe(
-        df,
-        use_container_width=True
-    )
+        st.dataframe(
+            df,
+            use_container_width=True
+        )
 
 elif menu == "➕ Agregar Rollo":
     st.subheader(
