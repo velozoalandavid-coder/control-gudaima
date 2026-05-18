@@ -408,20 +408,20 @@ elif menu == "📋 Ver Cortes":
         resp = requests.get(f"{API_URL}/cortes")
         resp.raise_for_status()
 
-        cortes = resp.json()
+    cortes = resp.json()
 
-        if not cortes:
-            st.info("No hay cortes cargados")
+    if not cortes:
+        st.info("No hay cortes cargados")
 
-grupos = defaultdict(list)
+    grupos = defaultdict(list)
 
-for c in cortes:
-    clave = c["observacion"] if c["observacion"] else f"CORTE {c['nro_corte']}"
-    grupos[clave].append(c)
+    for c in cortes:
+        clave = c["observacion"] if c["observacion"] else f"CORTE {c['nro_corte']}"
+        grupos[clave].append(c)
 
-for nombre, items in grupos.items():
+    for nombre, items in grupos.items():
 
-    primero = items[0]
+        primero = items[0]
 
     st.markdown(f"""
     ## ✂️ {nombre}
