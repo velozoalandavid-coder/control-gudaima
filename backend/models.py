@@ -22,7 +22,10 @@ class Rollo(Base):
 
 class Corte(Base):
     __tablename__ = "cortes"
-    nro_corte = Column(Integer, primary_key=True, autoincrement=True)
+
+    id_corte = Column(Integer, primary_key=True, autoincrement=True)
+    nro_corte = Column(Integer, index=True)
+
     fecha = Column(DateTime, default=datetime.datetime.utcnow)
     codigo_tela = Column(Float)
     tipo = Column(String)
