@@ -412,15 +412,36 @@ elif menu == "📋 Ver Cortes":
         if not cortes:
             st.info("No hay cortes cargados")
 
-        for corte in cortes:
+        from collections import defaultdict
 
-            try:
-                fecha = pd.to_datetime(
-                    corte["fecha"]
-                ).strftime("%d/%m/%Y %H:%M")
-            except:
-                fecha = corte["fecha"]
+grupos = defaultdict(list)
 
+for c in cortes:
+    clave = c["observacion"] if c["observacion"] else f"CORTE {c['nro_corte']}"
+    grupos[clave].append(c)
+
+for nombre, items in grupos.items():
+
+    primero = items[0]
+
+    st.markdown(f"""
+    ## ✂️ {nombre}
+    📅 Fecha: {primero["fecha"][:16]}
+
+    🧵 Tela: {primero["tipo"]}
+    """)
+
+    for x in items:
+
+        st.markdown(f"""
+        🎨 Color: {x["color"]}
+
+        ⚖️ KG: {x["kg_usados"]}
+
+        📦 Rollos: {x["rollos_usados"]}
+
+        ---
+        """)
             st.markdown(f"""
 <div style="
 background:#ffffff;
