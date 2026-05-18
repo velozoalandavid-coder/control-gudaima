@@ -83,14 +83,27 @@ def fetch_json(endpoint):
 
 def post_json(endpoint, data):
     try:
-        r = requests.post(f"{API_URL}{endpoint}", json=data)
-        r.raise_for_status()
-        return r.json()
-    except requests.exceptions.HTTPError as e:
-        st.error(f"Error: {e.response.json().get('detail', str(e))}")
+        r = requests.post(
+            f"{API_URL}{endpoint}",
+            json=data
+        )
+
+        if r.status_code in [200, 201]:
+            try:
+                return r.json()
+            except:
+                return {"ok": True}
+
+        try:
+            detalle = r.json().get("detail", r.text)
+        except:
+            detalle = r.text
+
+        st.error(f"Error {r.status_code}: {detalle}")
         return None
+
     except Exception as e:
-        st.error(f"Error: {e}")
+        st.error(f"Error de conexión: {e}")
         return None
 
 menu = st.sidebar.radio("Navegación", 
