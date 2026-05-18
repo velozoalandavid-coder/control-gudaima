@@ -204,9 +204,9 @@ if menu == "📦 Stock Actual":
                 f"${pd.DataFrame(stock)['valor_stock'].sum():,.0f}"
             )
 
-        st.divider()
+            st.divider()
 
-        st.markdown("### 📈 Top telas por KG")
+            st.markdown("### 📈 Top telas por KG")
 
         grafico = (
             df.sort_values(
@@ -218,9 +218,9 @@ if menu == "📦 Stock Actual":
             ["stock_actual_kg"]
         )
 
-        st.bar_chart(grafico)
+            st.bar_chart(grafico)
 
-        st.dataframe(
+            st.dataframe(
             df,
             use_container_width=True
         )
