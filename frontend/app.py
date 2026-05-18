@@ -198,17 +198,17 @@ if menu == "📦 Stock Actual":
         with col4:
             st.metric("🔴 Sin stock", sin_stock)
 
-        if autorizado:
+if autorizado:
             st.metric(
                 "💰 Valor total",
                 f"${pd.DataFrame(stock)['valor_stock'].sum():,.0f}"
             )
 
-             st.divider()
+st.divider()
 
-        st.markdown("### 📈 Top telas por KG")
+st.markdown("### 📈 Top telas por KG")
 
-        grafico = (
+grafico = (
             df.sort_values(
                 "stock_actual_kg",
                 ascending=False
@@ -218,9 +218,9 @@ if menu == "📦 Stock Actual":
             ["stock_actual_kg"]
         )
 
-        st.bar_chart(grafico)
+st.bar_chart(grafico)
 
-        st.dataframe(
+st.dataframe(
             df,
             use_container_width=True
         )
