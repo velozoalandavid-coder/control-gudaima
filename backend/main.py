@@ -54,19 +54,26 @@ def startup():
 
             db.commit()
 
-            for _, row in cortes_df.iterrows():
-                db.add(Corte(
-                    nro_corte=row["nro_corte"],
-                    fecha=pd.to_datetime(row["fecha"]),
-                    codigo_tela=row["codigo_tela"],
-                    tipo=row["tipo"],
-                    color=row["color"],
-                    kg_usados=row["kg_usados"],
-                    rollos_usados=row["rollos_usados"],
-                    observacion=row["observacion"]
-                ))
+if db.query(Corte).count() == 0:
+    try:
+        cortes_df = pd.read_csv("cortes.csv")
 
-            db.commit()
+        for _, row in cortes_df.iterrows():
+            db.add(Corte(
+                nro_corte=int(row["nro_corte"]),
+                fecha=pd.to_datetime(row["fecha"]),
+                codigo_tela=float(row["codigo_tela"]),
+                tipo=row["tipo"],
+                color=row["color"],
+                kg_usados=float(row["kg_usados"]),
+                rollos_usados=int(row["rollos_usados"]),
+                observacion=row.get("observacion","")
+            ))
+
+        db.commit()
+
+    except Exception as e:
+        print("ERROR CORTES:", e)
 
             print("CSV cargados correctamente")
 
