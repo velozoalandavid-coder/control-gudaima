@@ -226,7 +226,7 @@ if menu == "📦 Stock Actual":
         )
         
 elif menu == "➕ Agregar Rollo":
-    st.subheader(
+        st.subheader(
         "Agregar Rollos (ingresá los pesos de cada rollo)"
 
 
