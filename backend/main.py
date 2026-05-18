@@ -306,22 +306,42 @@ def get_cortes(db: Session = Depends(get_db)):
 from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
+
 @app.get("/recargar-cortes-csv")
 def recargar_cortes_csv(db: Session = Depends(get_db)):
-    cortes_df = pd.read_csv("cortes.csv")
+    try:
 
-    for _, row in cortes_df.iterrows():
-        db.add(Corte(
-            nro_corte=int(row["nro_corte"]),
-            fecha=pd.to_datetime(row["fecha"]),
-            codigo_tela=float(row["codigo_tela"]),
-            tipo=row["tipo"],
-            color=row["color"],
-            kg_usados=float(row["kg_usados"]),
-            rollos_usados=int(row["rollos_usados"]),
-            observacion=row.get("observacion", "")
-        ))
+        db.query(Corte).delete()
+        db.commit()
 
-    db.commit()
+        cortes_df = pd.read_csv("cortes.csv")
 
-    return {"mensaje": "Cortes recargados", "cantidad": len(cortes_df)}
+        cantidad = 0
+
+        for _, row in cortes_df.iterrows():
+
+            db.add(Corte(
+                nro_corte=int(row["nro_corte"]),
+                fecha=pd.to_datetime(row["fecha"]),
+                codigo_tela=float(row["codigo_tela"]),
+                tipo=str(row["tipo"]),
+                color=str(row["color"]),
+                kg_usados=float(row["kg_usados"]),
+                rollos_usados=int(row["rollos_usados"]),
+                observacion="" if pd.isna(
+                    row.get("observacion", "")
+                ) else str(row.get("observacion", ""))
+            ))
+
+            cantidad += 1
+
+        db.commit()
+
+        return {
+            "mensaje": "Cortes recargados correctamente",
+            "cantidad": cantidad
+        }
+
+    except Exception as e:
+        db.rollback()
+        return {"error": str(e)}
