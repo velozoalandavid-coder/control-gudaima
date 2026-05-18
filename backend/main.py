@@ -320,20 +320,28 @@ def recargar_cortes_csv(db: Session = Depends(get_db)):
 
         for _, row in cortes_df.iterrows():
 
-            db.add(Corte(
-                nro_corte=int(row["nro_corte"]),
-                fecha=pd.to_datetime(row["fecha"]),
-                codigo_tela=float(row["codigo_tela"]),
-                tipo=str(row["tipo"]),
-                color=str(row["color"]),
-                kg_usados=float(row["kg_usados"]),
-                rollos_usados=int(row["rollos_usados"]),
-                observacion="" if pd.isna(
-                    row.get("observacion", "")
-                ) else str(row.get("observacion", ""))
-            ))
+    obs = "" if pd.isna(row.get("observacion", "")) else str(row.get("observacion", ""))
 
-            cantidad += 1
+    nro_real = int(row["nro_corte"])
+
+    if "CORTE" in obs.upper():
+        import re
+        encontrado = re.search(r"N\.?\s*(\d+)", obs.upper())
+        if encontrado:
+            nro_real = int(encontrado.group(1))
+
+    db.add(Corte(
+        nro_corte=nro_real,
+        fecha=pd.to_datetime(row["fecha"]),
+        codigo_tela=float(row["codigo_tela"]),
+        tipo=str(row["tipo"]),
+        color=str(row["color"]),
+        kg_usados=float(row["kg_usados"]),
+        rollos_usados=int(row["rollos_usados"]),
+        observacion=obs
+    ))
+
+    cantidad += 1
 
         db.commit()
 
