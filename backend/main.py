@@ -75,6 +75,11 @@ def startup():
     except Exception as e:
         print("ERROR CORTES:", e)
 
+        db.commit()
+
+    except Exception as e:
+        print("ERROR CORTES:", e)
+
             print("CSV cargados correctamente")
 
         except Exception as e:
