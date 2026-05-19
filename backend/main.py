@@ -383,14 +383,17 @@ def crear_corte_lote(
 ):
     obs = limpiar_obs(corte_lote.observacion)
 
-    if obs:
-        observacion_final = obs
+    # Obtener el próximo número de corte
+    ultimo_nro = db.query(func.max(Corte.nro_corte)).scalar() or 0
+    nuevo_nro_corte = ultimo_nro + 1
+
+    # Generar observación final si no se proveyó
+    if not obs:
+        observacion_final = f"CORTE N.{nuevo_nro_corte}"
     else:
-        ultimo_id = db.query(func.max(Corte.nro_corte)).scalar()
-        observacion_final = f"CORTE N.{(ultimo_id or 0) + 1}"
+        observacion_final = obs
 
     ids_creados = []
-    siguiente_id = (db.query(func.max(Corte.nro_corte)).scalar() or 0) + 1
 
     for det in corte_lote.detalles:
         tela = db.query(Tela).filter_by(
@@ -398,42 +401,27 @@ def crear_corte_lote(
             tipo=det.tipo,
             color=det.color
         ).first()
-
         if not tela:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Tela no existe: {det.tipo} {det.color}"
-            )
+            raise HTTPException(400, f"Tela no existe: {det.tipo} {det.color}")
 
+        # Verificar stock (reutilizando tu función get_stock)
         stock_items = [
             s for s in get_stock(db)
             if s.codigo_tela == det.codigo_tela
             and s.tipo == det.tipo
             and s.color == det.color
         ]
-
         if not stock_items:
-            raise HTTPException(
-                status_code=400,
-                detail="Sin stock"
-            )
-
+            raise HTTPException(400, "Sin stock")
         stock = stock_items[0]
 
         if det.kg_usados > stock.stock_actual_kg:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Stock insuficiente: {stock.stock_actual_kg}"
-            )
-
+            raise HTTPException(400, f"Stock insuficiente: {stock.stock_actual_kg} kg")
         if det.rollos_usados > stock.rollos_disponibles:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Rollos insuficientes: {stock.rollos_disponibles}"
-            )
+            raise HTTPException(400, f"Rollos insuficientes: {stock.rollos_disponibles}")
 
         nuevo_corte = Corte(
-            nro_corte=siguiente_id,
+            nro_corte=nuevo_nro_corte,          # MISMO número para todo el lote
             fecha=datetime.utcnow(),
             codigo_tela=det.codigo_tela,
             tipo=det.tipo,
@@ -442,17 +430,16 @@ def crear_corte_lote(
             rollos_usados=det.rollos_usados,
             observacion=observacion_final
         )
-
         db.add(nuevo_corte)
-        ids_creados.append(siguiente_id)
-        siguiente_id += 1
+        ids_creados.append(nuevo_corte.id)  # opcional: devolver IDs de los registros
 
     db.commit()
 
     return {
         "mensaje": "Corte registrado",
         "corte": observacion_final,
-        "ids": ids_creados
+        "numeros_corte": nuevo_nro_corte,   # un solo número
+        "detalles_ids": ids_creados
     }
 
 
