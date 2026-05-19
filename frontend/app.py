@@ -452,8 +452,6 @@ elif menu == "📋 Ver Cortes":
                 🧵 <b>Tela:</b> {primero["tipo"]}
             
                 """, unsafe_allow_html=True)
-            
-                    detalles_html = ""
 
                 detalles_html = ""
 
