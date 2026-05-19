@@ -415,24 +415,20 @@ elif menu == "📋 Ver Cortes":
             # Agrupar por número de corte (o por observación si el número no es confiable)
             grupos = defaultdict(list)
             for c in cortes:
-                # Intenta extraer número de la observación (ej: "CORTE N.215")
                 obs = c.get("observacion", "")
                 match = re.search(r"CORTE\s*N\.?\s*(\d+)", obs.upper())
                 if match:
                     clave = f"CORTE N.{match.group(1)}"
                 else:
-                    # Si no hay número en observación, usa el nro_corte de la BD
                     clave = f"CORTE N.{c['nro_corte']}"
                 grupos[clave].append(c)
 
-            # Mostrar cada grupo como una tarjeta
+            # Mostrar cada grupo como una tarjeta con todos sus detalles
             for nombre, items in grupos.items():
-                # Ordenar items por fecha (opcional)
                 items.sort(key=lambda x: x["fecha"])
                 primero = items[0]
                 fecha = str(primero["fecha"]).replace("T", " ")[:16]
 
-                # Construir HTML con todos los detalles del corte
                 detalles_html = ""
                 for detalle in items:
                     detalles_html += f"""
@@ -459,7 +455,6 @@ elif menu == "📋 Ver Cortes":
                 </div>
                 """, unsafe_allow_html=True)
 
-        # Botón para eliminar corte (por número)
         st.subheader("🗑️ Eliminar Corte")
         nro = st.number_input("Número de corte", min_value=1, step=1)
         if st.button("Eliminar Corte"):
