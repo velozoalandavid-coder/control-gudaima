@@ -383,7 +383,7 @@ def crear_corte_lote(
 ):
     obs = limpiar_obs(corte_lote.observacion)
 
-    # Obtener el próximo número de corte
+    # Obtener el próximo número de corte (único para todo el lote)
     ultimo_nro = db.query(func.max(Corte.nro_corte)).scalar() or 0
     nuevo_nro_corte = ultimo_nro + 1
 
@@ -404,7 +404,7 @@ def crear_corte_lote(
         if not tela:
             raise HTTPException(400, f"Tela no existe: {det.tipo} {det.color}")
 
-        # Verificar stock (reutilizando tu función get_stock)
+        # Verificar stock (reutilizamos la lógica de get_stock)
         stock_items = [
             s for s in get_stock(db)
             if s.codigo_tela == det.codigo_tela
@@ -412,13 +412,13 @@ def crear_corte_lote(
             and s.color == det.color
         ]
         if not stock_items:
-            raise HTTPException(400, "Sin stock")
+            raise HTTPException(400, "Sin datos de stock")
         stock = stock_items[0]
 
         if det.kg_usados > stock.stock_actual_kg:
-            raise HTTPException(400, f"Stock insuficiente: {stock.stock_actual_kg} kg")
+            raise HTTPException(400, f"Stock insuficiente (disponible: {stock.stock_actual_kg} kg)")
         if det.rollos_usados > stock.rollos_disponibles:
-            raise HTTPException(400, f"Rollos insuficientes: {stock.rollos_disponibles}")
+            raise HTTPException(400, f"Rollos insuficientes (disponibles: {stock.rollos_disponibles})")
 
         nuevo_corte = Corte(
             nro_corte=nuevo_nro_corte,          # MISMO número para todo el lote
@@ -431,7 +431,7 @@ def crear_corte_lote(
             observacion=observacion_final
         )
         db.add(nuevo_corte)
-        ids_creados.append(nuevo_corte.id)  # opcional: devolver IDs de los registros
+        ids_creados.append(nuevo_corte.id)
 
     db.commit()
 
@@ -439,7 +439,7 @@ def crear_corte_lote(
         "mensaje": "Corte registrado",
         "corte": observacion_final,
         "numeros_corte": nuevo_nro_corte,   # un solo número
-        "detalles_ids": ids_creados
+        "ids": ids_creados
     }
 
 
