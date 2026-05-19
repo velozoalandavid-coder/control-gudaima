@@ -436,22 +436,6 @@ elif menu == "📋 Ver Cortes":
                     "T"," "
                 )[:16]
             
-                st.markdown(f"""
-                <div style="
-                background:#ffffff;
-                padding:25px;
-                border-radius:18px;
-                margin-bottom:25px;
-                border-left:6px solid #e91e63;
-                box-shadow:0 4px 15px rgba(0,0,0,.08);
-                ">
-            
-                <h2>✂️ {nombre}</h2>
-            
-                📅 <b>Fecha:</b> {fecha}<br>
-                🧵 <b>Tela:</b> {primero["tipo"]}
-            
-                """, unsafe_allow_html=True)
 
                 detalles_html = ""
 
@@ -480,7 +464,6 @@ elif menu == "📋 Ver Cortes":
         </div>
         """, unsafe_allow_html=True)
             
-        st.markdown("</div>", unsafe_allow_html=True)
 
         st.subheader("🗑️ Eliminar Corte")
 
