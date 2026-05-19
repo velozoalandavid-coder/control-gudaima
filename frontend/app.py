@@ -415,7 +415,15 @@ elif menu == "📋 Ver Cortes":
             grupos = defaultdict(list)
 
             for c in cortes:
-                clave = c.get("observacion") or f"CORTE N.{c['nro_corte']}"
+                obs = str(c.get("observacion") or "")
+            
+                encontrado = re.search(r"CORTE\s*N\.?\s*(\d+)", obs.upper())
+            
+                if encontrado:
+                    clave = f"CORTE N.{encontrado.group(1)}"
+                else:
+                    clave = f"CORTE N.{c['nro_corte']}"
+            
                 grupos[clave].append(c)
 
             for nombre, items in grupos.items():
