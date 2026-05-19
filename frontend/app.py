@@ -438,13 +438,13 @@ elif menu == "📋 Ver Cortes":
 
             for nombre, items in grupos.items():
 
-    primero = items[0]
-
-    fecha = str(
-        primero["fecha"]
-    ).replace("T"," ")[:16]
-
-    detalles_html = ""
+                    primero = items[0]
+                
+                    fecha = str(
+                        primero["fecha"]
+                    ).replace("T"," ")[:16]
+                
+                    detalles_html = ""
 
     for x in items:
         detalles_html += f"""
