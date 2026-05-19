@@ -82,27 +82,29 @@ def cargar_cortes_csv(db: Session, borrar_antes: bool = False):
     cantidad = 0
 
     for _, row in cortes_df.iterrows():
-        nro_corte = int(row["nro_corte"])
 
-        existe = db.query(Corte).filter(
-            Corte.nro_corte == nro_corte
-        ).first()
+    obs = "" if pd.isna(row.get("observacion", "")) else str(row.get("observacion", ""))
 
-        if existe:
-            continue
+    nro_real = int(row["nro_corte"])
 
-        db.add(Corte(
-            nro_corte=nro_corte,
-            fecha=pd.to_datetime(row["fecha"]),
-            codigo_tela=float(row["codigo_tela"]),
-            tipo=str(row["tipo"]),
-            color=str(row["color"]),
-            kg_usados=float(row["kg_usados"]),
-            rollos_usados=int(row["rollos_usados"]),
-            observacion=limpiar_obs(row.get("observacion", ""))
-        ))
+    import re
+    encontrado = re.search(r"CORTE\s*N\.?\s*(\d+)", obs.upper())
 
-        cantidad += 1
+    if encontrado:
+        nro_real = int(encontrado.group(1))
+
+    db.add(Corte(
+        nro_corte=nro_real,
+        fecha=pd.to_datetime(row["fecha"]),
+        codigo_tela=float(row["codigo_tela"]),
+        tipo=str(row["tipo"]),
+        color=str(row["color"]),
+        kg_usados=float(row["kg_usados"]),
+        rollos_usados=int(row["rollos_usados"]),
+        observacion=obs
+    ))
+
+    cantidad += 1
 
     db.commit()
     return cantidad
