@@ -455,7 +455,7 @@ elif menu == "📋 Ver Cortes":
 
                 detalles_html = ""
 
-    for x in items:
+        for x in items:
         detalles_html += f"""
         <div style="padding:10px 0; border-top:1px solid #eee;">
             🎨 <b>Color:</b> {x["color"]}<br>
