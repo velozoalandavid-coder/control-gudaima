@@ -74,43 +74,52 @@ def cargar_rollos_csv(db: Session):
 
 
 def cargar_cortes_csv(db: Session, borrar_antes: bool = False):
+
     if borrar_antes:
         db.query(Corte).delete()
         db.commit()
 
     cortes_df = pd.read_csv("cortes.csv")
-cantidad = 0
+    cantidad = 0
 
-for _, row in cortes_df.iterrows():
+    for _, row in cortes_df.iterrows():
 
-    obs = "" if pd.isna(row.get("observacion","")) else str(row.get("observacion",""))
+        obs = "" if pd.isna(
+            row.get("observacion", "")
+        ) else str(
+            row.get("observacion", "")
+        )
 
-    nro_real = int(row["nro_corte"])
+        nro_real = int(row["nro_corte"])
 
-    import re
-    encontrado = re.search(
-        r"CORTE\s*N\.?\s*(\d+)",
-        obs.upper()
-    )
+        encontrado = re.search(
+            r"CORTE\s*N\.?\s*(\d+)",
+            obs.upper()
+        )
 
-    if encontrado:
-        nro_real = int(encontrado.group(1))
+        if encontrado:
+            nro_real = int(
+                encontrado.group(1)
+            )
 
-    db.add(Corte(
-        nro_corte=nro_real,
-        fecha=pd.to_datetime(row["fecha"]),
-        codigo_tela=float(row["codigo_tela"]),
-        tipo=str(row["tipo"]),
-        color=str(row["color"]),
-        kg_usados=float(row["kg_usados"]),
-        rollos_usados=int(row["rollos_usados"]),
-        observacion=obs
-    ))
+        db.add(Corte(
+            nro_corte=nro_real,
+            fecha=pd.to_datetime(row["fecha"]),
+            codigo_tela=float(row["codigo_tela"]),
+            tipo=str(row["tipo"]),
+            color=str(row["color"]),
+            kg_usados=float(row["kg_usados"]),
+            rollos_usados=int(
+                row["rollos_usados"]
+            ),
+            observacion=obs
+        ))
 
-    cantidad += 1
+        cantidad += 1
 
-db.commit()
-return cantidad
+    db.commit()
+
+    return cantidad
 
 
 @app.on_event("startup")
