@@ -81,7 +81,7 @@ def cargar_cortes_csv(db: Session, borrar_antes: bool = False):
     cortes_df = pd.read_csv("cortes.csv")
     cantidad = 0
 
-    for _, row in cortes_df.iterrows():
+for _, row in cortes_df.iterrows():
 
     obs = "" if pd.isna(row.get("observacion", "")) else str(row.get("observacion", ""))
 
