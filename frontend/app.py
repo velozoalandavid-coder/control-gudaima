@@ -420,42 +420,42 @@ elif menu == "📋 Ver Cortes":
 
             for nombre, items in grupos.items():
 
-    primero = items[0]
-
-    fecha = str(
-        primero["fecha"]
-    ).replace(
-        "T"," "
-    )[:16]
-
-    st.markdown(f"""
-    <div style="
-    background:#ffffff;
-    padding:25px;
-    border-radius:18px;
-    margin-bottom:25px;
-    border-left:6px solid #e91e63;
-    box-shadow:0 4px 15px rgba(0,0,0,.08);
-    ">
-
-    <h2>✂️ {nombre}</h2>
-
-    📅 <b>Fecha:</b> {fecha}<br>
-    🧵 <b>Tela:</b> {primero["tipo"]}
-
-    """, unsafe_allow_html=True)
-
-    for x in items:
-
-        st.markdown(f"""
-        🎨 Color: {x["color"]}<br>
-        ⚖️ KG: {x["kg_usados"]}<br>
-        📦 Rollos: {x["rollos_usados"]}
-
-        <hr>
-        """, unsafe_allow_html=True)
-
-    st.markdown("</div>", unsafe_allow_html=True)
+                primero = items[0]
+            
+                fecha = str(
+                    primero["fecha"]
+                ).replace(
+                    "T"," "
+                )[:16]
+            
+                st.markdown(f"""
+                <div style="
+                background:#ffffff;
+                padding:25px;
+                border-radius:18px;
+                margin-bottom:25px;
+                border-left:6px solid #e91e63;
+                box-shadow:0 4px 15px rgba(0,0,0,.08);
+                ">
+            
+                <h2>✂️ {nombre}</h2>
+            
+                📅 <b>Fecha:</b> {fecha}<br>
+                🧵 <b>Tela:</b> {primero["tipo"]}
+            
+                """, unsafe_allow_html=True)
+            
+                for x in items:
+            
+                    st.markdown(f"""
+                    🎨 Color: {x["color"]}<br>
+                    ⚖️ KG: {x["kg_usados"]}<br>
+                    📦 Rollos: {x["rollos_usados"]}
+            
+                    <hr>
+                    """, unsafe_allow_html=True)
+            
+                st.markdown("</div>", unsafe_allow_html=True)
 
         st.subheader("🗑️ Eliminar Corte")
 
