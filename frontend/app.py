@@ -403,68 +403,26 @@ elif menu == "📋 Ver Rollos":
 
 elif menu == "📋 Ver Cortes":
     st.subheader("✂️ Historial de Cortes")
-
     try:
         resp = requests.get(f"{API_URL}/cortes")
-        resp.raise_for_status()
         cortes = resp.json()
-
         if not cortes:
-            st.info("No hay cortes cargados")
+            st.info("No hay cortes")
         else:
-            # Agrupar por número de corte (o por observación si el número no es confiable)
-            grupos = defaultdict(list)
+            grupos = {}
             for c in cortes:
-                obs = c.get("observacion", "")
-                match = re.search(r"CORTE\s*N\.?\s*(\d+)", obs.upper())
-                if match:
-                    clave = f"CORTE N.{match.group(1)}"
-                else:
-                    clave = f"CORTE N.{c['nro_corte']}"
-                grupos[clave].append(c)
+                # Extraer número del texto "CORTE N.XXX"
+                import re
+                match = re.search(r"CORTE\s*N\.?\s*(\d+)", c.get("observacion", "").upper())
+                clave = f"CORTE N.{match.group(1)}" if match else f"CORTE N.{c['nro_corte']}"
+                grupos.setdefault(clave, []).append(c)
 
-            # Mostrar cada grupo como una tarjeta con todos sus detalles
             for nombre, items in grupos.items():
-                items.sort(key=lambda x: x["fecha"])
-                primero = items[0]
-                fecha = str(primero["fecha"]).replace("T", " ")[:16]
-
-                detalles_html = ""
-                for detalle in items:
-                    detalles_html += f"""
-                    <div style='padding:12px 0; border-top:1px solid #eee;'>
-                        🧵 <b>Color:</b> {detalle['color']}<br>
-                        ⚖️ <b>KG:</b> {detalle['kg_usados']}<br>
-                        📦 <b>Rollos:</b> {detalle['rollos_usados']}
-                    </div>
-                    """
-
-                st.markdown(f"""
-                <div style="
-                    background:#ffffff;
-                    padding:25px;
-                    border-radius:18px;
-                    margin-bottom:25px;
-                    border-left:6px solid #e91e63;
-                    box-shadow:0 4px 15px rgba(0,0,0,.08);
-                ">
-                    <h2>✂️ {nombre}</h2>
-                    📅 <b>Fecha:</b> {fecha}<br>
-                    🧵 <b>Tela:</b> {primero['tipo']}<br><br>
-                    {detalles_html}
-                </div>
-                """, unsafe_allow_html=True)
-
-        st.subheader("🗑️ Eliminar Corte")
-        nro = st.number_input("Número de corte", min_value=1, step=1)
-        if st.button("Eliminar Corte"):
-            r = requests.delete(f"{API_URL}/cortes/{int(nro)}")
-            if r.status_code == 200:
-                st.success("Corte eliminado")
-                st.rerun()
-            else:
-                st.error(r.text)
-
+                st.markdown(f"### ✂️ {nombre}")
+                st.write(f"📅 Fecha: {items[0]['fecha'][:16]}  |  🧵 Tela: {items[0]['tipo']}")
+                for det in items:
+                    st.write(f"- Color: {det['color']}  |  KG: {det['kg_usados']}  |  Rollos: {det['rollos_usados']}")
+                st.divider()
     except Exception as e:
         st.error(f"Error: {e}")
 
