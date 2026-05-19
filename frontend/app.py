@@ -435,34 +435,45 @@ elif menu == "📋 Ver Cortes":
                 ).replace(
                     "T"," "
                 )[:16]
-            
 
-                detalles_html = ""
+            for nombre, items in grupos.items():
 
-        for x in items:
-            detalles_html += f"""
-            <div style="padding:10px 0; border-top:1px solid #eee;">
-                🎨 <b>Color:</b> {x["color"]}<br>
-                ⚖️ <b>KG:</b> {x["kg_usados"]}<br>
-                📦 <b>Rollos:</b> {x["rollos_usados"]}
-            </div>
-            """
-    
-        st.markdown(f"""
-        <div style="
-            background:#ffffff;
-            padding:25px;
-            border-radius:18px;
-            margin-bottom:25px;
-            border-left:6px solid #e91e63;
-            box-shadow:0 4px 15px rgba(0,0,0,.08);
-        ">
-            <h2>✂️ {nombre}</h2>
-            📅 <b>Fecha:</b> {fecha}<br>
-            🧵 <b>Tela:</b> {primero["tipo"]}<br><br>
-            {detalles_html}
+    primero = items[0]
+
+    fecha = str(
+        primero["fecha"]
+    ).replace("T"," ")[:16]
+
+    detalles_html = ""
+
+    for x in items:
+        detalles_html += f"""
+        <div style='padding:12px 0;border-top:1px solid #eee'>
+        🥜 <b>Color:</b> {x["color"]}<br>
+        ⚖️ <b>KG:</b> {x["kg_usados"]}<br>
+        📦 <b>Rollos:</b> {x["rollos_usados"]}
         </div>
-        """, unsafe_allow_html=True)
+        """
+
+    st.markdown(f"""
+    <div style="
+    background:#ffffff;
+    padding:25px;
+    border-radius:18px;
+    margin-bottom:25px;
+    border-left:6px solid #e91e63;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+    ">
+
+    <h2>✂️ {nombre}</h2>
+
+    📅 <b>Fecha:</b> {fecha}<br>
+    🧵 <b>Tela:</b> {primero["tipo"]}<br><br>
+
+    {detalles_html}
+
+    </div>
+    """, unsafe_allow_html=True)
             
 
         st.subheader("🗑️ Eliminar Corte")
