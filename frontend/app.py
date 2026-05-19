@@ -412,79 +412,60 @@ elif menu == "📋 Ver Cortes":
         if not cortes:
             st.info("No hay cortes cargados")
         else:
+            # Agrupar por número de corte (o por observación si el número no es confiable)
             grupos = defaultdict(list)
-
             for c in cortes:
-                obs = str(c.get("observacion") or "")
-            
-                encontrado = re.search(r"CORTE\s*N\.?\s*(\d+)", obs.upper())
-            
-                if encontrado:
-                    clave = f"CORTE N.{encontrado.group(1)}"
+                # Intenta extraer número de la observación (ej: "CORTE N.215")
+                obs = c.get("observacion", "")
+                match = re.search(r"CORTE\s*N\.?\s*(\d+)", obs.upper())
+                if match:
+                    clave = f"CORTE N.{match.group(1)}"
                 else:
+                    # Si no hay número en observación, usa el nro_corte de la BD
                     clave = f"CORTE N.{c['nro_corte']}"
-            
                 grupos[clave].append(c)
 
+            # Mostrar cada grupo como una tarjeta
             for nombre, items in grupos.items():
-
+                # Ordenar items por fecha (opcional)
+                items.sort(key=lambda x: x["fecha"])
                 primero = items[0]
-            
-                fecha = str(
-                    primero["fecha"]
-                ).replace(
-                    "T"," "
-                )[:16]
+                fecha = str(primero["fecha"]).replace("T", " ")[:16]
 
-            for nombre, items in grupos.items():
+                # Construir HTML con todos los detalles del corte
+                detalles_html = ""
+                for detalle in items:
+                    detalles_html += f"""
+                    <div style='padding:12px 0; border-top:1px solid #eee;'>
+                        🧵 <b>Color:</b> {detalle['color']}<br>
+                        ⚖️ <b>KG:</b> {detalle['kg_usados']}<br>
+                        📦 <b>Rollos:</b> {detalle['rollos_usados']}
+                    </div>
+                    """
 
-                    primero = items[0]
-                
-                    fecha = str(
-                        primero["fecha"]
-                    ).replace("T"," ")[:16]
-                
-                    detalles_html = ""
-        
-            for x in items:
-                detalles_html += f"""
-                <div style='padding:12px 0;border-top:1px solid #eee'>
-                🥜 <b>Color:</b> {x["color"]}<br>
-                ⚖️ <b>KG:</b> {x["kg_usados"]}<br>
-                📦 <b>Rollos:</b> {x["rollos_usados"]}
+                st.markdown(f"""
+                <div style="
+                    background:#ffffff;
+                    padding:25px;
+                    border-radius:18px;
+                    margin-bottom:25px;
+                    border-left:6px solid #e91e63;
+                    box-shadow:0 4px 15px rgba(0,0,0,.08);
+                ">
+                    <h2>✂️ {nombre}</h2>
+                    📅 <b>Fecha:</b> {fecha}<br>
+                    🧵 <b>Tela:</b> {primero['tipo']}<br><br>
+                    {detalles_html}
                 </div>
-                """
-        
-            st.markdown(f"""
-            <div style="
-            background:#ffffff;
-            padding:25px;
-            border-radius:18px;
-            margin-bottom:25px;
-            border-left:6px solid #e91e63;
-            box-shadow:0 4px 15px rgba(0,0,0,.08);
-            ">
-        
-            <h2>✂️ {nombre}</h2>
-        
-            📅 <b>Fecha:</b> {fecha}<br>
-            🧵 <b>Tela:</b> {primero["tipo"]}<br><br>
-        
-            {detalles_html}
-        
-            </div>
-            """, unsafe_allow_html=True)
-            
+                """, unsafe_allow_html=True)
 
+        # Botón para eliminar corte (por número)
         st.subheader("🗑️ Eliminar Corte")
-
-        nro = st.number_input("Número", min_value=1, step=1)
-
+        nro = st.number_input("Número de corte", min_value=1, step=1)
         if st.button("Eliminar Corte"):
             r = requests.delete(f"{API_URL}/cortes/{int(nro)}")
-
             if r.status_code == 200:
-                st.success("Eliminado")
+                st.success("Corte eliminado")
                 st.rerun()
             else:
                 st.error(r.text)
